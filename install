@@ -172,5 +172,9 @@ else
   /usr/bin/htpasswd -c -m -b /var/www/htpasswd inunez "It's all mine!";
 fi
 
+cd /etc/apache2/mods-enabled
+sudo ln -s ../mods-available/userdir.conf userdir.conf
+ln -s ../mods-available/userdir.load userdir.load
+
 # Restart apache to deal with new groups and such
 service apache2 reload
