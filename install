@@ -12,6 +12,7 @@
 
 mkdir /root/treasure-hunt
 mkdir /root/treasure-hunt/bin
+cp treasure-hunt-users-fall12.tar /root/treasure-hunt
 cd /root/treasure-hunt/bin
 
 echo "Making group apache"
@@ -123,7 +124,7 @@ useradd -c "Guest" -m -G student -s /bin/bash guest
 echo "guest:guest" | /usr/sbin/chpasswd 
 
 echo "Untarring user files into ../users"
-tar --preserve-permissions --same-owner -xvf treasure-hunt-users-fall12.tar
+tar --preserve-permissions --same-owner -xvf ../treasure-hunt-users-fall12.tar
 mv users ../users
 chown root.root ../users
 chmod 700 ../users
