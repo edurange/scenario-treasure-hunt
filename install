@@ -172,6 +172,19 @@ else
   /usr/bin/htpasswd -c -m -b /var/www/htpasswd inunez "It's all mine!";
 fi
 
+# recompile bininaries
+gcc /home/cdry/bin/archive.c -o /home/cdry/bin/archive
+chmod  4775 /home/cdry/bin/archive
+
+gcc /home/dshi/bin/backup.c -o /home/dshi/bin/backup
+chmod  4775 /home/dshi/bin/backup
+
+gcc /home/kelva/bin/swap.c -o /home/kelva/bin/swap
+chmod  6775 /home/kelva/bin/swap
+
+gcc /home/pkaideka/private/guess_my_password.c -o /home/pkaideka/private/guess_my_password
+chmod  750 /home/pkaideka/private/guess_my_password
+
 # allow public_html home directories
 cd /etc/apache2/mods-enabled
 sudo ln -s ../mods-available/userdir.conf userdir.conf
