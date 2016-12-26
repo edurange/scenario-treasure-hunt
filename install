@@ -132,11 +132,11 @@ chmod 700 ../users
 
 # Reset the state of the treasure hunt files 
 
-../resetFakeUsers
+chown root.root ../resetFakeUsers
+chmod 755 ../resetFakeUsers
+cp -p -t /bin/ ../resetFakeUsers
 
-cp -t /bin/ ../resetFakeUsers
-chown root.root /bin/resetFakeUsers
-chmod 755 /bin/resetFakeUsers
+../resetFakeUsers
 
 for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka kelva ldouzette pkaideka pradessime qsanera tdaforth; done
     chown root /home/$USER/.bash_history
