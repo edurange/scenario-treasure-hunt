@@ -61,3 +61,8 @@ ln -s ../mods-available/userdir.load userdir.load
 
 # Restart apache to deal with new groups and such
 service apache2 reload
+
+for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka kelva ldouzette pkaideka pradessime qsanera tdaforth; do
+  chown root /home/$USER/.bash_history
+  chmod 640 /home/$USER/.bash_history
+done

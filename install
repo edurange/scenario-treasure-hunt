@@ -134,14 +134,10 @@ chmod 700 ../users
 
 chown root.root ../resetFakeUsers
 chmod 755 ../resetFakeUsers
+chmod u+s ../resetFakeUsers
 cp -p -t /bin/ ../resetFakeUsers
 
 ../resetFakeUsers
-
-for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka kelva ldouzette pkaideka pradessime qsanera tdaforth; do
-  chown root /home/$USER/.bash_history
-  chmod 640 /home/$USER/.bash_history
-done
 
 chmod 644 /home/jdekka/.bash_history
 
