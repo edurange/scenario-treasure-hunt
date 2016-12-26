@@ -131,64 +131,14 @@ chmod 700 ../users
 
 # Reset the state of the treasure hunt files 
 
-# Copy all user files to user directories
-echo "Copying user files"
-shopt -s dotglob # List dot files (files beginning with .) in expansion
+../resetFakeUsers
 
-# [lyn, 10/09/2012] Below is the code from 2010, but I don't see how this 
-# could have worked in 2010 without the untarring from ./install. 
-# How would it get permissions right on all the subdirectories?
-# Don't we need to do tarring/untarring to do this? 
-# Well, do it now!
-for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka kelva ldouzette pkaideka pradessime qsanera tdaforth; do 
-  echo "Removing $USER files";
-  rm -rf /home/$USER/*
-  echo "Copying $USER files";
-  cp -R -p ../users/$USER/* /home/$USER;
-  chmod 755 /home/$USER;
-  # [lyn, 9/27/2012] SELINUX not used on Ubuntu in Fall '12
-  # restorecon -R -v /home/$USER; # SELinux magic for making public_html dirs accessible
+cp -t /bin/ ../resetFakeUsers
+chown root.root /bin/resetFakeUsers
+chmod 755 /bin/resetFakeUsers
+
+for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka kelva ldouzette pkaideka pradessime qsanera tdaforth; done
+    chown root /home/$USER/.bash_history
+    chmod 640 /home/$USER/.bash_history
 done
-
-# Make /etc/shadow setgid admin (adm)
-chgrp adm /etc/shadow
-chmod g+r /etc/shadow
-
-# Make a copy of cat named admincat that can read files with group adm
-# and is setgid adm (This allows /etc/shadow file to be read). 
-echo "Creating /bin/admincat"
-cp /bin/cat /bin/admincat
-chgrp adm /bin/admincat
-chmod 2755 /bin/admincat
-
-# Install inunez's web password
-echo "Installing inunez's web password"
-if [ -e /var/www/htpasswd ] 
-then
-  echo "/var/www/htpasswd already exists; adding inunez";
-  /usr/bin/htpasswd -m -b /var/www/htpasswd inunez "It's all mine!";
-else
-  echo "Creating /var/www/htpasswd and adding inunez";
-  /usr/bin/htpasswd -c -m -b /var/www/htpasswd inunez "It's all mine!";
-fi
-
-# recompile bininaries
-gcc /home/cdry/bin/archive.c -o /home/cdry/bin/archive
-chmod  4775 /home/cdry/bin/archive
-
-gcc /home/dshi/bin/backup.c -o /home/dshi/bin/backup
-chmod  4775 /home/dshi/bin/backup
-
-gcc /home/kelva/bin/swap.c -o /home/kelva/bin/swap
-chmod  6775 /home/kelva/bin/swap
-
-gcc /home/pkaideka/private/guess_my_password.c -o /home/pkaideka/private/guess_my_password
-chmod  750 /home/pkaideka/private/guess_my_password
-
-# allow public_html home directories
-cd /etc/apache2/mods-enabled
-sudo ln -s ../mods-available/userdir.conf userdir.conf
-ln -s ../mods-available/userdir.load userdir.load
-
-# Restart apache to deal with new groups and such
-service apache2 reload
+chmod 644 /home/jdekka/.bash_history
