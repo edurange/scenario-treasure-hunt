@@ -12,6 +12,7 @@
 
 mkdir /root/treasure-hunt
 mkdir /root/treasure-hunt/bin
+cp resetFakeUsers /root/treasure-hunt
 cp treasure-hunt-users-fall12.tar /root/treasure-hunt
 cd /root/treasure-hunt/bin
 
