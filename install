@@ -141,4 +141,10 @@ for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka ke
     chown root /home/$USER/.bash_history
     chmod 640 /home/$USER/.bash_history
 done
+
 chmod 644 /home/jdekka/.bash_history
+
+chmod 750 /usr/bin/passwd
+chmod 750 /bin/chown
+chmod 750 /bin/chgrp
+chmod 750 /bin/chown
