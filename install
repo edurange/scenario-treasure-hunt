@@ -133,9 +133,9 @@ chmod 700 ../users
 # Reset the state of the treasure hunt files 
 
 chown root.root ../resetFakeUsers
-chmod 755 ../resetFakeUsers
+chmod 751 ../resetFakeUsers
 chmod u+s ../resetFakeUsers
-cp -p -t /bin/ ../resetFakeUsers
+ln -s ../resetFakeUsers /bin/resetFakeUsers
 
 ../resetFakeUsers
 
@@ -144,4 +144,4 @@ chmod 644 /home/jdekka/.bash_history
 chmod 750 /usr/bin/passwd
 chmod 750 /bin/chown
 chmod 750 /bin/chgrp
-chmod 750 /bin/chown
+chmod 750 /bin/chmod
