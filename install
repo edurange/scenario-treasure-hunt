@@ -12,7 +12,7 @@
 
 mkdir /root/treasure-hunt
 mkdir /root/treasure-hunt/bin
-cp resetFakeUsers /root/treasure-hunt
+cp -t /root/treasure-hunt/ resetFakeUsers.c resetUsers
 cp treasure-hunt-users-fall12.tar /root/treasure-hunt
 cd /root/treasure-hunt/bin
 
@@ -152,19 +152,23 @@ else
   echo "Creating /var/www/htpasswd and adding inunez";
   /usr/bin/htpasswd -c -m -b /var/www/htpasswd inunez "It's all mine!";
 fi
+ 
 
-
-# Reset the state of the treasure hunt files 
+# Make resetFakeUsers program
+gcc ../resetFakeUsers.c -o ../resetFakeUsers
 
 chown root.root ../resetFakeUsers
 chmod 755 ../resetFakeUsers
 chmod u+s ../resetFakeUsers
 cp -p -t /bin/ ../resetFakeUsers
 
-../resetFakeUsers
+chmod 750 ../resetUsers
+
+# Initiate the state of the treasure hunt files
+../resetUsers
 
 
-
+# Don't let students mess with unnecessary things!
 chmod 750 /usr/bin/passwd
 chmod 750 /bin/chown
 chmod 750 /bin/chgrp
