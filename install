@@ -130,16 +130,40 @@ mv users ../users
 chown root.root ../users
 chmod 700 ../users
 
+
+# Make /etc/shadow setgid admin (adm)
+chgrp adm /etc/shadow
+chmod g+r /etc/shadow
+
+# Make a copy of cat named admincat that can read files with group adm
+# and is setgid adm (This allows /etc/shadow file to be read). 
+echo "Creating /bin/admincat"
+cp /bin/cat /bin/admincat
+chgrp adm /bin/admincat
+chmod 2755 /bin/admincat
+
+# Install inunez's web password
+echo "Installing inunez's web password"
+if [ -e /var/www/htpasswd ] 
+then
+  echo "/var/www/htpasswd already exists; adding inunez";
+  /usr/bin/htpasswd -m -b /var/www/htpasswd inunez "It's all mine!";
+else
+  echo "Creating /var/www/htpasswd and adding inunez";
+  /usr/bin/htpasswd -c -m -b /var/www/htpasswd inunez "It's all mine!";
+fi
+
+
 # Reset the state of the treasure hunt files 
 
 chown root.root ../resetFakeUsers
-chmod 751 ../resetFakeUsers
+chmod 755 ../resetFakeUsers
 chmod u+s ../resetFakeUsers
 cp -p -t /bin/ ../resetFakeUsers
 
 ../resetFakeUsers
 
-chmod 644 /home/jdekka/.bash_history
+
 
 chmod 750 /usr/bin/passwd
 chmod 750 /bin/chown

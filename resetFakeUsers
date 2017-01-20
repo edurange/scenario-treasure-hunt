@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copy all user files to user directories
 echo "Copying user files"
 shopt -s dotglob # List dot files (files beginning with .) in expansion
@@ -16,28 +18,6 @@ for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka ke
   # [lyn, 9/27/2012] SELINUX not used on Ubuntu in Fall '12
   # restorecon -R -v /home/$USER; # SELinux magic for making public_html dirs accessible
 done
-
-# Make /etc/shadow setgid admin (adm)
-chgrp adm /etc/shadow
-chmod g+r /etc/shadow
-
-# Make a copy of cat named admincat that can read files with group adm
-# and is setgid adm (This allows /etc/shadow file to be read). 
-echo "Creating /bin/admincat"
-cp /bin/cat /bin/admincat
-chgrp adm /bin/admincat
-chmod 2755 /bin/admincat
-
-# Install inunez's web password
-echo "Installing inunez's web password"
-if [ -e /var/www/htpasswd ] 
-then
-  echo "/var/www/htpasswd already exists; adding inunez";
-  /usr/bin/htpasswd -m -b /var/www/htpasswd inunez "It's all mine!";
-else
-  echo "Creating /var/www/htpasswd and adding inunez";
-  /usr/bin/htpasswd -c -m -b /var/www/htpasswd inunez "It's all mine!";
-fi
 
 # recompile bininaries
 gcc /home/cdry/bin/archive.c -o /home/cdry/bin/archive
@@ -70,3 +50,5 @@ for USER in awan bduomo cdry dshi equintus fsexon ghepta hochoa inunez jdekka ke
   chown root /home/$USER/.bash_history
   chmod 640 /home/$USER/.bash_history
 done
+
+chmod 644 /home/jdekka/.bash_history
