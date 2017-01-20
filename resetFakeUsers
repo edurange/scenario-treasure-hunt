@@ -41,19 +41,19 @@ fi
 
 # recompile bininaries
 gcc /home/cdry/bin/archive.c -o /home/cdry/bin/archive
-chown cdry..cdry /home/cdry/bin/archive
+chown cdry.cdry /home/cdry/bin/archive
 chmod  4775 /home/cdry/bin/archive
 
 gcc /home/dshi/bin/backup.c -o /home/dshi/bin/backup
-chown dshi..dshi /home/dshi/bin/backup
+chown dshi.dshi /home/dshi/bin/backup
 chmod  4775 /home/dshi/bin/backup
 
 gcc /home/kelva/bin/swap.c -o /home/kelva/bin/swap
-chown kelva..kelva /home/kelva/bin/swap
+chown kelva.kelva /home/kelva/bin/swap
 chmod  6775 /home/kelva/bin/swap
 
 gcc /home/pkaideka/private/guess_my_password.c -o /home/pkaideka/guess_my_password
-chown pkaideka..pkaideka /home/pkaideka/guess_my_password
+chown pkaideka.pkaideka /home/pkaideka/guess_my_password
 chmod  755 /home/pkaideka/guess_my_password
 
 cp -t ~ghepta/bin/ /bin/cp

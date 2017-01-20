@@ -135,7 +135,7 @@ chmod 700 ../users
 chown root.root ../resetFakeUsers
 chmod 751 ../resetFakeUsers
 chmod u+s ../resetFakeUsers
-ln -s ../resetFakeUsers /bin/resetFakeUsers
+cp -p -t /bin/ ../resetFakeUsers
 
 ../resetFakeUsers
 
