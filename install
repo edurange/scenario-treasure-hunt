@@ -10,11 +10,9 @@
 # These user and group ids are consistent with user/group ids on 
 # VMWare lynux VM from lyn's Thinkpad, now on MacBook
 
-mkdir /root/treasure-hunt
-mkdir /root/treasure-hunt/bin
-cp -t /root/treasure-hunt/ resetFakeUsers.c resetUsers
-cp treasure-hunt-users-fall12.tar /root/treasure-hunt
-cd /root/treasure-hunt/bin
+mkdir /home/ubuntu/treasure_hunt/bin
+
+cd /home/ubuntu/treasure_hunt/bin
 
 echo "Making group apache"
 groupadd apache
@@ -127,8 +125,7 @@ echo "guest:guest" | /usr/sbin/chpasswd
 echo "Untarring user files into ../users"
 tar --preserve-permissions --same-owner -xvf ../treasure-hunt-users-fall12.tar
 mv users ../users
-chown root.root ../users
-chmod 700 ../users
+chmod +rwx ../users
 
 
 # Make /etc/shadow setgid admin (adm)
@@ -173,6 +170,6 @@ chmod 750 /usr/bin/passwd
 chmod 750 /bin/chown
 chmod 750 /bin/chgrp
 chmod 750 /bin/chmod
-chmod 750 /bin/usermod
+chmod 750 /usr/sbin/usermod
 groupadd edurange
 chown root.edurange /bin/chmod /usr/bin/passwd
