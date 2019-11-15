@@ -1,0 +1,6 @@
+
+terraform.tfstate
+
+terraform.tfstate.backup
+
+.terraform/plugins/linux_amd64/
