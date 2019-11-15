@@ -66,7 +66,7 @@ write_files:
     <source>
       @type tail
       @id bash_history_tail
-      path /home/*/.cli.log
+      path /usr/local/src/logs/*/.cli.log
       pos_file /var/log/td-agent/bash_history.log.pos
       <parse>
         @type tsv
@@ -97,7 +97,4 @@ runcmd:
 - set -eu
 - mv /ubuntu/td-agent.conf /etc/td-agent/td-agent.conf
 - chown td-agent:td-agent /etc/td-agent/td-agent.conf
-%{ for player in players }
-- sudo -u ${player.login} touch /home/${player.login}/.cli.log
-%{ endfor }
 - service td-agent restart

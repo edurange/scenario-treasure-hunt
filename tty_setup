@@ -23,6 +23,10 @@ chmod +x /usr/local/src/ttylog/makeTsv.py
 awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd > /usr/local/src/user_names.txt
 
 while read line; do
+	mkdir /usr/local/src/logs/$line
+        touch /usr/local/src/logs/$line/.cli.csv
+	chmod 777 /usr/local/src/logs/$line
+	chmod 777 /usr/local/src/logs/$line/.cli.csv
 	echo "$line ALL=(ALL) NOPASSWD: /bin/mkdir -p /usr/local/src/logs/" | sudo EDITOR='tee -a' visudo
 	echo "$line ALL=(ALL) NOPASSWD: /bin/touch /usr/local/src/logs/count.$(hostname)" | sudo EDITOR='tee -a' visudo
 	echo "$line ALL=(ALL) NOPASSWD: /bin/chmod ugo+rw /usr/local/src/logs/count.$(hostname)" | sudo EDITOR='tee -a' visudo
