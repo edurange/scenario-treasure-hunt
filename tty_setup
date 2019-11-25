@@ -25,6 +25,7 @@ awk -F: '$3 >= 1000 && $1 != "nobody" {print $1}' /etc/passwd > /usr/local/src/u
 while read line; do
 	mkdir /usr/local/src/logs/$line
         touch /usr/local/src/logs/$line/.cli.csv
+	touch /usr/local/src/logs/ttylog.treasure-hunt.$line.0
 	chmod 777 /usr/local/src/logs/$line
 	chmod 777 /usr/local/src/logs/$line/.cli.csv
 	echo "$line ALL=(ALL) NOPASSWD: /bin/mkdir -p /usr/local/src/logs/" | sudo EDITOR='tee -a' visudo

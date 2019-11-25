@@ -170,7 +170,7 @@ resource "aws_route_table" "public" {
 
 }
 
-resource "aws_route_table_association" "strace_subnut_route_table_association"{
+resource "aws_route_table_association" "thvm_subnet_route_table_association"{
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
@@ -263,10 +263,10 @@ resource "aws_instance" "treasure_hunt" {
     inline = [
       "set -eux",
       "cloud-init status --wait --long",
-      "chmod +x /home/ubuntu/treasure_hunt/install",
-      "chmod +x /home/ubuntu/treasure_hunt/tty_setup",
-      "sudo /home/ubuntu/treasure_hunt/tty_setup",
-      "sudo /home/ubuntu/treasure_hunt/install"
+      "sudo chmod +x /home/ubuntu/treasure_hunt/install",
+      "sudo /home/ubuntu/treasure_hunt/install",
+      "sudo chmod +x /home/ubuntu/treasure_hunt/tty_setup",
+      "sudo /home/ubuntu/treasure_hunt/tty_setup"
     ]
   }
 
