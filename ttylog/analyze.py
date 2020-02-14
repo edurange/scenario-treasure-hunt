@@ -49,7 +49,7 @@ def decode(lines):
     'csi_character_attributes' : re.compile(r'^(?:[0-9]*;?)*m'),
     'csi_window_manipulation' : re.compile(r'^[0-9]*(?:;[0-9]*){2}t')
     }
-    
+
     buf = []
     i_line = 0
     decode_line_timestamp = ''
@@ -69,11 +69,11 @@ def decode(lines):
         len_line = len(line)
 
         while i_stream_line < len_line:
-            
+
             #Skip the bell (^G) characters
             if line[i_stream_line] == '\x07':
                 i_stream_line += 1
-            
+
             #Carriage return ('\r') means to move the cursor at the start of the line
             elif line[i_stream_line] == '\r':
                 cursor_pointer = 0
@@ -111,7 +111,7 @@ def decode(lines):
                         cursor_pointer += 1
                         i_stream_line += 1
                         i += 1
-                    
+
                 elif (line[i_stream_line] == 'C') or (line[i_stream_line] in string.digits and line[i_stream_line + 1] == 'C'):
                     """ move the cursor forward n columns """
                     n = int(line[i_stream_line]) if line[i_stream_line] in string.digits else 1
@@ -159,7 +159,7 @@ def decode(lines):
                 #Skip the characters for DEC Private Mode RESET. Samples are <0x1b>[?1024l
                 elif escape_sequence_dict['csi_dec_private_mode_reset'].match(line[i_stream_line:]):
                     move_cursor_control_characters = escape_sequence_dict['csi_dec_private_mode_reset'].match(line[i_stream_line:]).span()[1]
-                    i_stream_line += move_cursor_control_characters                    
+                    i_stream_line += move_cursor_control_characters
 
             #If it is a normal character
             else:
@@ -273,31 +273,30 @@ if __name__ == "__main__":
 
         #Get the commands from lines
         #If user uses root to SSH, don't run the following 'elif' section
-        elif ttylog_sessions[current_session_id]['initial_prompt'].casefold() in line.casefold() and ttylog_sessions[current_session_id]['initial_prompt'].casefold() != root_prompt.casefold(): 
+        elif user_prompt in line.casefold() or user_initial_prompt in line.casefold() and ttylog_sessions[current_session_id]['initial_prompt'].casefold() != root_prompt.casefold():
             #If line is like 'googletest@intro:~$ ls;1554089474', 'google' is output of previous command
             start_of_prompt = line.casefold().find(user_prompt.casefold())
             if start_of_prompt > 0:
                 output_till_start_of_prompt = line[:start_of_prompt]
                 output_prevous_command += output_till_start_of_prompt + "\n"
                 line = line[start_of_prompt:]
-            
+
             if line_timestamp > 0 and len(line_command) > 0:
                 #If earlier the prompt was root, and now the prompt is of normal user, append using root_prompt for this line. Afterwards, set 'is_current_prompt_root' to False, and append using 'user_prompt'
                 if is_current_prompt_root == True:
                     ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, root_prompt])
                     is_current_prompt_root = False
                 else:
-                    ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_prompt])
+                    ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_initial_prompt])
                 line_timestamp = 0
                 line_command = ''
-            
+
             output_prevous_command = ''
 
             #Sample line is 'test@intro:~$ done;1553743085'
             left_dollar_part, right_dollar_part = line.split('$',1)
             current_working_directory = left_dollar_part.split(':',1)[-1]
             current_working_directory = current_working_directory.replace('~', ttylog_sessions[current_session_id]['home_dir'] ,1)
-            user_prompt = ttylog_sessions[current_session_id]['initial_prompt']
             right_dollar_part = right_dollar_part[1:]
 
             #Incase the user closes the terminal, without using the 'exit' command, line is like 'test@intro:~$'
@@ -309,6 +308,9 @@ if __name__ == "__main__":
             if line_split[-1].isdigit():
                 line_timestamp = int(line_split[-1])
                 line_command = ';'.join(line_split[:-1] )
+                if line_command.split(' ')[0] == 'su':
+                    user_prompt = line_command.split(' ')[1] + user_prompt[user_prompt.index('@'):]
+
             else:
                 line_timestamp = 0
 
@@ -337,7 +339,7 @@ if __name__ == "__main__":
                     ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, root_prompt])
                 line_timestamp = 0
                 line_command = ''
-            
+
             output_prevous_command = ''
 
             left_hash_part, right_hash_part = line.split('#',1)
@@ -348,15 +350,15 @@ if __name__ == "__main__":
             #Incase the user closes the terminal, without using the 'exit' command, line is like 'test@intro:~$'
             if len(right_hash_part) == 0:
                 continue
-                
+
             line_split = right_hash_part.split(';')
-            
+
             if line_split[-1].isdigit():
                 line_timestamp = int(line_split[-1])
                 line_command = ';'.join(line_split[:-1] )
             else:
                 line_timestamp = 0
-            
+
             #line_timestamp = int(line_split[-1])
             #line_command = ';'.join(line_split[:-1] )
             continue
@@ -369,10 +371,10 @@ if __name__ == "__main__":
                 if is_current_prompt_root == True:
                     ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, root_prompt])
                     is_current_prompt_root = False
-                ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_prompt])
+                ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_initial_prompt])
                 line_timestamp = 0
                 line_command = ''
-            
+
             output_prevous_command = ''
             continue
 
