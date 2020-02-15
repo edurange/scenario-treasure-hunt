@@ -366,7 +366,7 @@ if __name__ == "__main__":
                     ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, root_prompt])
                     is_current_prompt_root = False
                 else:
-                    ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_prompt])
+                    ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_initial_prompt])
                 line_timestamp = 0
                 line_command = ''
 
@@ -375,8 +375,7 @@ if __name__ == "__main__":
             #Sample line is 'test@intro:~$ done;1553743085'
             left_dollar_part, right_dollar_part = line.split('$',1)
             current_working_directory = left_dollar_part.split(':',1)[-1]
-            current_working_directory = current_working_directory.replace('~', ttylog_sessions[current_session_id]['home_dir'] ,1)
-            user_prompt = ttylog_sessions[current_session_id]['initial_prompt']
+            current_working_directory = current_working_directory.replace('~', home_directory ,1)
             right_dollar_part = right_dollar_part[1:]
 
             #Incase the user closes the terminal, without using the 'exit' command, line is like 'test@intro:~$'
@@ -390,6 +389,7 @@ if __name__ == "__main__":
                 line_command = ';'.join(line_split[:-1] )
                 if line_command.split(' ')[0] == 'su':
                     user_prompt = line_command.split(' ')[1] + user_prompt[user_prompt.index('@'):]
+                    home_directory = '/home/' + line_command.split(' ')[1]
             else:
                 line_timestamp = 0
 
@@ -418,7 +418,7 @@ if __name__ == "__main__":
                 #If this is the first line when the user became root, we want the prompt to be 'user_prompt', not 'root_prompt'
                 if is_current_prompt_root == False:
                     user_prompt = ttylog_sessions[current_session_id]['initial_prompt']
-                    ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_prompt])
+                    ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, user_initial_prompt])
                     is_current_prompt_root = True
                 else:
                     ttylog_sessions[current_session_id]['lines'].append(['CMBEGIN', node_name, line_timestamp, current_working_directory, line_command, output_prevous_command, root_prompt])
