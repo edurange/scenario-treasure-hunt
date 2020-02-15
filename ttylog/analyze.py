@@ -253,8 +253,8 @@ def sort_ttylog_lines(line):
 if __name__ == "__main__":
 
     #The input ttylog file path is stored in 'ttylog'
-    ttylog = '/home/jack/annotation/recon/alltty.home.jack'
-    csv_output_file = '/home/jack/annotation/recon/out.csv'
+    ttylog = sys.argv[1]
+    csv_output_file = sys.argv[2]
         # if not os.path.isfile(ttylog):
         #     logging.critical("there's a problem with ttylog! aborting.")
         #     exit(1)
