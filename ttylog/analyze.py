@@ -347,6 +347,14 @@ if __name__ == "__main__":
         #Get the commands from lines
         #If user uses root to SSH, don't run the following 'elif' section
         elif user_prompt in line.casefold() or user_initial_prompt in line.casefold() and ttylog_sessions[current_session_id]['initial_prompt'].casefold() != root_prompt.casefold():
+
+            # If the initial prompt is encountered, it means that there was a
+            # failed 'su' attempt, or an undetected exit from a different terminal prompt.
+            # In these cases, revert to the initial prompt.
+
+            if user_initial_prompt in line.casefold():
+                user_prompt = user_initial_prompt
+
             #If line is like 'googletest@intro:~$ ls;1554089474', 'google' is output of previous command
             start_of_prompt = line.casefold().find(user_prompt.casefold())
             if start_of_prompt > 0:
