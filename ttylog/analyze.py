@@ -350,10 +350,11 @@ if __name__ == "__main__":
 
             # If the initial prompt is encountered, it means that there was a
             # failed 'su' attempt, or an undetected exit from a different terminal prompt.
-            # In these cases, revert to the initial prompt.
+            # In these cases, revert to the initial prompt and home directory.
 
             if user_initial_prompt in line.casefold():
                 user_prompt = user_initial_prompt
+                home_directory = ttylog_sessions[current_session_id]['home_dir']
 
             #If line is like 'googletest@intro:~$ ls;1554089474', 'google' is output of previous command
             start_of_prompt = line.casefold().find(user_prompt.casefold())
