@@ -70,8 +70,7 @@ def decode(lines):
 
     escape_sequence_dict = {
     #ESC] OSC – Operating System Command. In xterm, they may also be terminated by BEL character. In xterm, the window title can be set by OSC 0;this is the window title BEL.
-    #The sample line for root prompt is o
-t@intro: ~oot@intro:~# id;1554092145'
+    #The sample line for root prompt is ']0;root@intro: ~root@intro:~# id;1554092145'
     'osc_reg_expr' : re.compile(r'\x1B][0-9]*;[\x20-\x7e]*\x07'),
     'csi_cursor_position' : re.compile(r'^[0-9]*;?[0-9]*H'),
     'csi_dec_private_mode_set' : re.compile(r'^\?(?:[0-9]*;?)*h'),
@@ -268,6 +267,7 @@ if __name__ == "__main__":
     first_ttylog_line = 0
     root_home_dir = '/root'
     node_name = ''
+    known_prompts = []
     is_current_prompt_root = False
 
     for count,line in enumerate(ttylog_lines):
@@ -290,6 +290,7 @@ if __name__ == "__main__":
         if r'User prompt is' in line:
             user_initial_prompt = line.split()[-1]
             ttylog_sessions[current_session_id]['initial_prompt'] = user_initial_prompt
+            known_prompts.append(user_initial_prompt)
             node_name = line.split('@')[-1]
             root_prompt = 'root@' + node_name
             is_current_prompt_root = False
@@ -347,15 +348,16 @@ if __name__ == "__main__":
 
         #Get the commands from lines
         #If user uses root to SSH, don't run the following 'elif' section
-        elif user_prompt in line.casefold() or user_initial_prompt in line.casefold() and ttylog_sessions[current_session_id]['initial_prompt'].casefold() != root_prompt.casefold():
+        elif any(p in line.casefold() for p in known_prompts) and ttylog_sessions[current_session_id]['initial_prompt'].casefold() != root_prompt.casefold():
 
             # If the initial prompt is encountered, it means that there was a
             # failed 'su' attempt, or an undetected exit from a different terminal prompt.
             # In these cases, revert to the initial prompt and home directory.
-
-            if user_initial_prompt in line.casefold():
-                user_prompt = user_initial_prompt
-                home_directory = ttylog_sessions[current_session_id]['home_dir']
+            for prompt in known_prompts:
+                if prompt in line.casefold():
+                    current_prompt = prompt
+            user_prompt = current_prompt
+            home_directory = '/home/' + user_prompt[0:user_prompt.index('@')]
 
             #If line is like 'googletest@intro:~$ ls;1554089474', 'google' is output of previous command
             start_of_prompt = line.casefold().find(user_prompt.casefold())
@@ -398,8 +400,18 @@ if __name__ == "__main__":
                 line_timestamp = int(line_split[-1])
                 line_command = ';'.join(line_split[:-1] )
                 if line_command.split(' ')[0] == 'su':
-                    user_prompt = line_command.split(' ')[1] + user_prompt[user_prompt.index('@'):]
-                    home_directory = '/home/' + line_command.split(' ')[1]
+                    if line_command.split(' ')[1] == '-l' \
+                    or line_command.split(' ')[1] == '--login' \
+                    or line_command.split(' ')[1] == '-i' \
+                    or len(line_command.split(' ')[1]) <= 2:
+                        user_prompt = line_command.split(' ')[2] + user_prompt[user_prompt.index('@'):]
+                        home_directory = '/home/' + line_command.split(' ')[2]
+                    else:
+                        user_prompt = line_command.split(' ')[1] + user_prompt[user_prompt.index('@'):]
+                        home_directory = '/home/' + line_command.split(' ')[1]
+
+                if user_prompt not in known_prompts:
+                    known_prompts.append(user_prompt)
             else:
                 line_timestamp = 0
 
@@ -408,8 +420,7 @@ if __name__ == "__main__":
             continue
 
         elif root_prompt.casefold() in line.casefold():
-            #Same line is 'googlo
-t@intro: ~oot@intro:~# done;1554092159'
+            #Same line is 'google]0;root@intro: ~root@intro:~# done;1554092159'
             start_of_first_prompt = line.casefold().find(root_prompt.casefold() )
             if start_of_first_prompt > 0:
                 output_till_start_of_prompt = line[:start_of_first_prompt]
@@ -503,4 +514,3 @@ t@intro: ~oot@intro:~# done;1554092159'
         csvwriter.writerow(line)
 
     csvfile.close()
-
