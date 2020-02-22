@@ -399,13 +399,15 @@ if __name__ == "__main__":
             if line_split[-1].isdigit():
                 line_timestamp = int(line_split[-1])
                 line_command = ';'.join(line_split[:-1] )
+                if line_command.split(' ')[0] == 'sudo' and line_command.split(' ')[1] == '-i':
+                    continue
                 if line_command.split(' ')[0] == 'su':
                     if line_command.split(' ')[1] == '-l' \
-                    or line_command.split(' ')[1] == '--login' \
-                    or line_command.split(' ')[1] == '-i' \
-                    or len(line_command.split(' ')[1]) <= 2:
+                    or line_command.split(' ')[1] == '--login':
                         user_prompt = line_command.split(' ')[2] + user_prompt[user_prompt.index('@'):]
                         home_directory = '/home/' + line_command.split(' ')[2]
+                    elif line_command.split(' ')[1] == '-':
+                        continue
                     else:
                         user_prompt = line_command.split(' ')[1] + user_prompt[user_prompt.index('@'):]
                         home_directory = '/home/' + line_command.split(' ')[1]
