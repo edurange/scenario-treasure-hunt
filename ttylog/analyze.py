@@ -403,11 +403,11 @@ if __name__ == "__main__":
                     continue
                 if line_command.split(' ')[0] == 'su':
                     if line_command.split(' ')[1] == '-l' \
-                    or line_command.split(' ')[1] == '--login':
+                    or line_command.split(' ')[1] == '--login' \
+                    or line_command.split(' ')[1] == '-':
                         user_prompt = line_command.split(' ')[2] + user_prompt[user_prompt.index('@'):]
                         home_directory = '/home/' + line_command.split(' ')[2]
-                    elif line_command.split(' ')[1] == '-':
-                        continue
+
                     else:
                         user_prompt = line_command.split(' ')[1] + user_prompt[user_prompt.index('@'):]
                         home_directory = '/home/' + line_command.split(' ')[1]
